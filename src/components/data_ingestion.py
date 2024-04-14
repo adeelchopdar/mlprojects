@@ -4,7 +4,8 @@ import pandas as pd
 
 from src.exception import CustomException
 from src.logger import logging
-from src.components.data_transformation import DataTransformation, DataTransformationconfig
+from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainer
 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
@@ -52,5 +53,8 @@ if __name__ == '__main__':
     tr_data, test_data = obj.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(tr_data, test_data)
+    tr_arr, test_arr, _ = data_transformation.initiate_data_transformation(tr_data, test_data)
 
+    modeltrainer= ModelTrainer()
+    best_r2 = modeltrainer.initiate_model_trainer(tr_arr, test_arr)
+    print(best_r2)
