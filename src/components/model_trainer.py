@@ -2,6 +2,8 @@ import os
 import sys
 from dataclasses import dataclass
 
+from sklearn.metrics import r2_score
+
 from catboost import CatBoostRegressor
 from sklearn.ensemble import (
     AdaBoostRegressor,
@@ -10,10 +12,12 @@ from sklearn.ensemble import (
 )
 
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
+
+
+from model_params import params
 
 from src.exception import CustomException
 from src.logger import logging
@@ -37,19 +41,19 @@ class ModelTrainer:
                 test_arr[:, :-1], #removing the last column and keep rest 
                 test_arr[:, -1] #Keeping the last column
             )
-            # Try HyperParameter tuning yourself
+            
             models= {
                 'Random Forest': RandomForestRegressor(),
                 'Decision Tree': DecisionTreeRegressor(),
                 'Gradient Boosting': GradientBoostingRegressor(),
                 'Linear Regression': LinearRegression(),
-                'K-Neighbors': KNeighborsRegressor(),
                 'XGBoost': XGBRegressor(),
                 'CatBoost': CatBoostRegressor(),
                 'AdaBoost': AdaBoostRegressor()
             }
         
-            model_report=evaluate_models(x_tr, y_tr, x_test, y_test,models)
+            model_report=evaluate_models(x_tr, y_tr, x_test, y_test,
+                                         models = models,  params=params)
 
             # to get the best model score form dict
             best_model_score = max(sorted(model_report.values()))
